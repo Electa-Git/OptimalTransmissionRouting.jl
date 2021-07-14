@@ -58,7 +58,7 @@ voltages["ac_ugc"] = 400
 voltages["dc_ugc"] = 525
 
 #Minimum resolution
-resolution = Dict{Stirng, Any}()
+resolution = Dict{String, Any}()
 resolution["delta_min"] = 4
 resolution["weight_min"] = Dict{String, Any}()
 resolution["weight_min"]["ac_ohl"] = 1
@@ -66,5 +66,5 @@ resolution["weight_min"]["ac_ugc"] = 1
 resolution["weight_min"]["dc_ohl"] = 1
 resolution["weight_min"]["dc_ugc"] = 1
 
-export spatial_weights, voltages, resolution
+return spatial_weights, voltages, resolution
 end

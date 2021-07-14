@@ -5,6 +5,8 @@ module OptimalTransmissionRouting
 # import Compat
 import JuMP
 import Memento
+import Images
+import FileIO
 
 
 # Create our module level logger (this will get precompiled)
@@ -15,18 +17,19 @@ const _LOGGER = Memento.getlogger(@__MODULE__)
 __init__() = Memento.register(_LOGGER)
 
 include("core/define_weights.jl")
+include("core/image2weight.jl")
 
 
 # Spatial image files
-include("spatial_image_files/clc_agricultural.tiff")
-include("spatial_image_files/clc_mountains.tiff")
-include("spatial_image_files/clc_natural.tiff")
-include("spatial_image_files/clc_urban.tiff")
-include("spatial_image_files/clc_graph_Europe.tiff")
-include("spatial_image_files/clc_grid_225kv_400kv.tiff")
-include("spatial_image_files/natura2000.tiff")
-include("spatial_image_files/clc_railroads.tiff")
-include("spatial_image_files/clc_roads.tiff")
-include("spatial_image_files/sea.tiff")
+# include("spatial_image_files/clc_agricultural.tif")
+# include("spatial_image_files/clc_mountains.tif")
+# include("spatial_image_files/clc_natural.tif")
+# include("spatial_image_files/clc_urban.tif")
+# include("spatial_image_files/clc_graph_Europe.tif")
+# include("spatial_image_files/clc_grid_225kv_400kv.tif")
+# include("spatial_image_files/natura2000.tif")
+# include("spatial_image_files/clc_railroads.tif")
+# include("spatial_image_files/clc_roads.tif")
+# include("spatial_image_files/sea.tif")
 
 end
