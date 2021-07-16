@@ -1,4 +1,4 @@
-function convert_image_files_to_weights()
+function convert_image_files_to_weights(bus1, bus2)
 
     # create dictionary with rbg rgb_values
     rgb_values = Dict{String, Any}()
@@ -25,29 +25,20 @@ function convert_image_files_to_weights()
     rgb_values, img_overlay = convert2integer(img_natura2000, rgb_values, "Natura2000", 7, img_overlay)
 
 
-
-    x,y = lonlat_to_webmercator(41.923587777533555, 12.996460091734507)
+    X1,Y1 = convert_latlon_to_etrs89(bus1["longitude"], bus1["latitude"])
+    X2,Y2 = convert_latlon_to_etrs89(bus2["longitude"], bus2["latitude"])
     
-
+    # http://www.eea.europa.eu/data-and-maps/data/corine-land-cover-2006-raster-2
     x0=1500000;
     xmax=7400000;
     y0=900000;
     ymax=5500000;
     resolution=2500;
-
-    id = "03es_11es"	
-    #X1 = 3178050 
-    #Y1 = 2154895
-    X2 = 3355847
-    Y2 = 1860692
-
-    X1 = round(x) + x0
-    Y1 = round(y) + y0
     
-
-
     xpos=[(X1-x0),(X2-x0)] / resolution
     ypos=[(ymax-Y1),(ymax-Y2)] / resolution
+
+    # ToDo fox range based on coordinates
 
     xpos_plot=round.([(X1-x0); (X2-x0)]/resolution .- xmax) #range(1,1);
     ypos_plot=round.([(ymax-Y1); (ymax-Y2)]/resolution .- y0) #- range(2,1);
@@ -60,7 +51,7 @@ function convert_image_files_to_weights()
     plot_dictionary["x_position"] = xpos_plot
     plot_dictionary["y_position"] = ypos_plot
 
-    return rgb_values, nodes_lp, id, boundaries, plot_dictionary
+    return rgb_values, nodes_lp, boundaries, plot_dictionary
 end
 
 
@@ -78,33 +69,37 @@ function convert2integer(image, rgb_values, imagename, factor, img_overlay)
 end
 
 
-function lonlat_to_webmercator(xLon, yLat)
+function convert_latlon_to_etrs89(longitude, latitude)
 
-    # Check coordinates are in range
-    abs(xLon) <= 180 || throw("Maximum longitude is 180.")
-    abs(yLat) < 85.051129 || throw("Web Mercator maximum lattitude is 85.051129. This is the lattitude at which the full map becomes a square.")
+    # Coordinate transformation based on IOGP Geomatics
+    # Guidance Note Number 7, part 2
+    # Coordinate Conversions and Transformations including Formulas
+    # Section 3.4.2 Lambert Azimuthal Equal Area (EPSG Dataset coordinate operation method code 9820)
+    # https://www.iogp.org/bookstore/product/coordinate-conversions-and-transformation-including-formulas/
 
-    # Ellipsoid semi-major axis for WGS84 (metres)
-    # This is the equatorial radius - the Polar radius is 6356752.0
+    # fixed parameters
     a = 6378137.0
+    e = 0.081819191
+    phi0 = 0.907571211 # rad = 52 degree North
+    lambda0 = 0.174532925 # rad = 10 degree East
+    FE = 4321000 # False easting in m
+    FN = 3210000 # False nortinh in m
 
-    # Convert to radians
-    λ = xLon * 0.017453292519943295    # λ = xLon * π / 180
-    ϕ = yLat * 0.017453292519943295    # ϕ = yLat * π / 180
+    phi = latitude * pi / 180
+    lambda = longitude * pi / 180
 
-    # Convert to Web Mercator
-    # Note that:
-    # atanh(sin(ϕ)) = log(tan(π/4 + ϕ/2)) = 1/2 * log((1 + sin(ϕ)) / (1 - sin(ϕ)))
-    x = a * λ
-    y = a * atanh(sin(ϕ))
+    q = (1 - e^2) * ((sin(phi) / (1 - e^2 * sin(phi)^2)) - ((1 / (2 * e)) * log((1 - e * sin(phi)) / (1 + e * sin(phi)))))
+    q0 = (1 - e^2) * ((sin(phi0) / (1 - e^2 * sin(phi0)^2)) - ((1 / (2 * e)) * log((1 - e * sin(phi0)) / (1 + e * sin(phi0)))))
+    qp = (1 - e^2) * ((1 / (1 - e^2)) - ((1 / (2 * e) * log((1 - e) / (1 + e)))))
 
-    return x, y
-end
+    Rq = a * (qp / 2)^0.5
+    beta = asin(q / qp)
+    beta0 = asin(q0 / qp)
 
+    B = Rq * (2 / (1+ sin(beta0) * sin(beta) + (cos(beta0) * cos(beta) * cos(lambda - lambda0))))^0.5
+    D = a * (cos(phi0) / (1 - e^2 * sin(phi0)^2)^0.5) / (Rq * cos(beta0))
 
-function webmercator_to_lonlat(x, y)
-    a = 6378137.0
-    xLon = x / (a * 0.017453292519943295)
-    yLat = asin(tanh(y / a)) / 0.017453292519943295
-    return xLon, yLat
+    E = FE + (B*D) * (cos(beta) * sin(lambda - lambda0))
+    N = FN + (B/D) * (cos(beta0) * sin(beta) - (sin(beta0) * cos(beta) * cos(lambda - lambda0)))
+    return E, N
 end
