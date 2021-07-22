@@ -2,6 +2,9 @@ function convert_image_files_to_weights(bus1, bus2)
 
     # create dictionary with rbg rgb_values
     rgb_values = Dict{String, Any}()
+    boundaries = Dict{String, Any}()
+    nodes_lp = Dict{String, Any}()
+    plot_dictionary = Dict{String, Any}()
 
     #To Do add rnage based on input location   
     img_ag = Images.load("src/spatial_image_files/clc_agricultural.tif")
@@ -18,7 +21,7 @@ function convert_image_files_to_weights(bus1, bus2)
     img_nature = Images.load("src/spatial_image_files/clc_natural.tif")
     rgb_values, img_overlay = convert2integer(img_nature, rgb_values, "nature", 4, img_overlay)
     img_mountains = Images.load("src/spatial_image_files/clc_mountains.tif")
-    rgb_values, img_overlay = convert2integer(img_mountains, rgb_values, "mountains", 5, img_overlay)
+    rgb_values, img_overlay = convert2integer(img_mountains, rgb_values, "mountain", 5, img_overlay)
     img_urban = Images.load("src/spatial_image_files/clc_urban.tif")
     rgb_values, img_overlay = convert2integer(img_urban, rgb_values, "urban", 6, img_overlay)
     img_natura2000 = Images.load("src/spatial_image_files/Natura2000.tif")
@@ -34,19 +37,31 @@ function convert_image_files_to_weights(bus1, bus2)
     y0=900000;
     ymax=5500000;
     resolution=2500;
-    
-    xpos=[(X1-x0),(X2-x0)] / resolution
-    ypos=[(ymax-Y1),(ymax-Y2)] / resolution
 
-    # ToDo fox range based on coordinates
+    # Calculate the positions pof the nodes 
+    xpos=round.([(X1-x0),(X2-x0)] / resolution)
+    ypos=round.([(ymax-Y1),(ymax-Y2)] / resolution)
 
-    xpos_plot=round.([(X1-x0); (X2-x0)]/resolution .- xmax) #range(1,1);
-    ypos_plot=round.([(ymax-Y1); (ymax-Y2)]/resolution .- y0) #- range(2,1);
+    # Determine range: Euclidian distance +/- 30%
+    d = round(0.3 * sqrt((xpos[1] - xpos[1])^2 + (ypos[1] - ypos[2])^2))
+    x_min = min(xpos[1], xpos[2]) - d
+    x_max = max(xpos[1], xpos[2]) + d
+    y_min = min(ypos[1], ypos[2]) - d
+    y_max = max(ypos[1], ypos[2]) + d
+   
+    boundaries["xmin"] = x_min
+    boundaries["xmax"] = x_max
+    boundaries["ymin"] = y_min
+    boundaries["ymax"] = y_max
 
-    nodes_lp=[round.(xpos), round.(ypos)]
-    boundaries=[1 size(img_overlay,2); 1 size(img_overlay,1)]
+    xpos_plot=round.([(X1-x0); (X2-x0)]/resolution .- x_max) #range(1,1);
+    ypos_plot=round.([(ymax-Y1); (ymax-Y2)]/resolution .- y_min) #- range(2,1);
 
-    plot_dictionary = Dict{String, Any}()
+    nodes_lp["x1"] = xpos[1]
+    nodes_lp["x2"] = xpos[2]
+    nodes_lp["y1"] = ypos[1]
+    nodes_lp["y2"] = ypos[2]    
+
     plot_dictionary["overlay_image"] = img_overlay
     plot_dictionary["x_position"] = xpos_plot
     plot_dictionary["y_position"] = ypos_plot

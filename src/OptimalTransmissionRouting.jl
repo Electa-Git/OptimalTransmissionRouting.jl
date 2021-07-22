@@ -18,6 +18,7 @@ __init__() = Memento.register(_LOGGER)
 
 include("core/define_weights.jl")
 include("core/image2weight.jl")
+include("core/optimal_routing.jl")
 
 
 # Spatial image files
