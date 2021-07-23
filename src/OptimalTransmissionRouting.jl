@@ -7,6 +7,7 @@ import JuMP
 import Memento
 import Images
 import FileIO
+import ImagesInTerminal; const IIT = ImagesInTerminal
 
 
 # Create our module level logger (this will get precompiled)
@@ -19,6 +20,10 @@ __init__() = Memento.register(_LOGGER)
 include("core/define_weights.jl")
 include("core/image2weight.jl")
 include("core/optimal_routing.jl")
+include("core/costs_and_equipment_details.jl")
+include("core/a_star.jl")
+include("core/spatial_data_preparation.jl")
+include("io/plot_optimal_path.jl")
 
 
 # Spatial image files

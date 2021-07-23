@@ -1,5 +1,6 @@
 import OptimalTransmissionRouting; const OTR = OptimalTransmissionRouting
 import Images
+import ImagesInTerminal; const IIT = ImagesInTerminal
 
 # Some branch in Italy
 
@@ -18,6 +19,7 @@ rgb_values, nodes_lp, boundaries, plot_dictionary = OTR.convert_image_files_to_w
 input_data = Dict{String, Any}()
 
 input_data["resolution_factor"] = 1 # resolution_factor 1,2,3, ... to speed up algorithm
+#To Do fix resolution factor 
 input_data["algorithm_factor"] = 1 # algorithm_factor 1.....1.3 to speed up Astar algorithm, goes at expense of accuracy
 input_data["distance"] = 2.5  # do not change: this is the standard resolution of the environmental data
 input_data["algorithm"] = "Astar"  # "Astar" or "Dijkstra"
@@ -30,7 +32,7 @@ input_data["strategy"] = "all_permitted" # or "OHL_on_existing_corridors" or "ca
 input_data["losses"] = 0.01 # proxy for losses
 input_data["lifetime"] = 30 # lifetime: NOT USED in FLEXPLAN
 input_data["interest"] = 0.02 # Interest: NOT USED in FLEXPLAN 
-input_data["technology"] = "ac" # or "dc"
+input_data["technology"] = "dc" # or "dc"
 input_data["power_rating"] = 2000 # power rating
 input_data["start_node"] = Dict{String, Any}()
 input_data["start_node"]["x"] = nodes_lp["x1"]
@@ -39,4 +41,8 @@ input_data["end_node"] = Dict{String, Any}()
 input_data["end_node"]["x"] = nodes_lp["x2"]
 input_data["end_node"]["y"] = nodes_lp["y2"] 
 
-result_otr = OTR.do_optimal_routing(input_data)
+spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab  = OTR.do_optimal_routing(input_data)
+
+plot_optimal_path(plot_dictionary, spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab)
+
+Images.plot(plot_dictionary["overlay_image"])

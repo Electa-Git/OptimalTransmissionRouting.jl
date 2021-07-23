@@ -7,6 +7,7 @@ version = "0.1.0"
 [deps]
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
+ImagesInTerminal = "d8c32880-2388-543b-8c61-d9f865259254"
 JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
 Memento = "f28f55f0-a522-5efc-85c2-fe41dfb9b2d9"
 
@@ -17,6 +18,7 @@ Memento = "~0.10.0, ~0.12.0, ~1.0.0"
 julia = "^1.1.0"
 FileIO = "~1.10.1"
 Images = "~0.24.1"
+ImagesInTerminal = "~0.4.6"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
