@@ -7,7 +7,8 @@ import JuMP
 import Memento
 import Images
 import FileIO
-import ImagesInTerminal; const IIT = ImagesInTerminal
+import ColorTypes
+import Plots
 
 
 # Create our module level logger (this will get precompiled)

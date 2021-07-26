@@ -63,8 +63,8 @@ function convert_image_files_to_weights(bus1, bus2)
     nodes_lp["y2"] = ypos[2]    
 
     plot_dictionary["overlay_image"] = img_overlay
-    plot_dictionary["x_position"] = xpos_plot
-    plot_dictionary["y_position"] = ypos_plot
+    plot_dictionary["x_position"] = xpos
+    plot_dictionary["y_position"] = ypos
 
     return rgb_values, nodes_lp, boundaries, plot_dictionary
 end

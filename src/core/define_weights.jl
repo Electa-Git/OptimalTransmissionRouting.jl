@@ -1,4 +1,4 @@
-function define_weights_voltages()
+function define_weights_voltages(strategy)
 # Create dictionary of spatial weights for different equipment types / areas
 spatial_weights = Dict{String, Any}()
 
@@ -13,6 +13,21 @@ spatial_weights["ac_ohl"]["grid"] = 1
 spatial_weights["ac_ohl"]["agricultural"] = 1
 spatial_weights["ac_ohl"]["roads"] = 1
 spatial_weights["ac_ohl"]["railroads"] = 1
+
+if strategy == "OHL_on_existing_corridors"
+    spatial_weights["ac_ohl"]["agricultural"] = 40
+    spatial_weights["ac_ohl"]["nature"] = 40
+    spatial_weights["ac_ohl"]["mountain"] = 40
+end
+
+if strategy == "cables_only"
+    spatial_weights["ac_ohl"]["agricultural"] = 40
+    spatial_weights["ac_ohl"]["nature"] = 40
+    spatial_weights["ac_ohl"]["mountain"] = 40
+    spatial_weights["ac_ohl"]["grid"] = 40
+    spatial_weights["ac_ohl"]["roads"] = 40
+    spatial_weights["ac_ohl"]["railroads"] = 40
+end
 
 # Weights for AC UGC
 spatial_weights["ac_ugc"] =  Dict{String, Any}()
@@ -37,6 +52,21 @@ spatial_weights["dc_ohl"]["grid"] = 1
 spatial_weights["dc_ohl"]["agricultural"] = 1
 spatial_weights["dc_ohl"]["roads"] = 1
 spatial_weights["dc_ohl"]["railroads"] = 1
+
+if strategy == "OHL_on_existing_corridors"
+    spatial_weights["dc_ohl"]["agricultural"] = 40
+    spatial_weights["dc_ohl"]["nature"] = 40
+    spatial_weights["dc_ohl"]["mountain"] = 40
+end
+
+if strategy == "cables_only"
+    spatial_weights["dc_ohl"]["agricultural"] = 40
+    spatial_weights["dc_ohl"]["nature"] = 40
+    spatial_weights["dc_ohl"]["mountain"] = 40
+    spatial_weights["dc_ohl"]["grid"] = 40
+    spatial_weights["dc_ohl"]["roads"] = 40
+    spatial_weights["dc_ohl"]["railroads"] = 40
+end
 
 
 # Weights for AC UGC

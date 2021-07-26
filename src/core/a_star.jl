@@ -12,12 +12,15 @@ function optimize_route(spatial_data, spatial_data_matrices, cost_data, equipmen
     start_position, finish_position = determine_start_and_end_node(spatial_data_matrices, input_data)
 
     average_weight = sum(spatial_data["segment_weights"]) / size(spatial_data["segment_weights"] ,1)
+
+    minimum_weight = minimum(spatial_data["segment_weights"][spatial_data["segment_weights"] .!= 0])
     
     from_node = start_position
     to_node = finish_position
     OPEN_COUNT = 1
     path_cost = 0
     offshore_distance = 0
+    average_weight = minimum_weight
     target_distance = estimate_initial_distance(start_position, finish_position, spatial_data, average_weight)
     hn = path_cost
     gn = target_distance
@@ -28,6 +31,7 @@ function optimize_route(spatial_data, spatial_data_matrices, cost_data, equipmen
     ac_dc_transition = 0
     OPEN = my_insert_open(from_node, to_node, hn, gn, fn, wn, ac_dc_transition, ac_cable, dc_cable, offshore_distance, spatial_data)
     OPEN[OPEN_COUNT, 1] = 0
+
     CLOSED_COUNT = 1
     CLOSED = [from_node]
     NoPath = 1
@@ -51,7 +55,7 @@ function optimize_route(spatial_data, spatial_data_matrices, cost_data, equipmen
             flag = 0
             if any(OPEN[1 : OPEN_COUNT, 2] .== exp_array[i, 1])
                 j = findfirst(OPEN[1 : OPEN_COUNT, 2] .== exp_array[i, 1])
-                if exp_array[i,4] <= OPEN[j, 10]
+                if exp_array[i, 4] <= OPEN[j, 10]
                     OPEN[j, 3] = from_node
                     OPEN[j, 4] = spatial_data["nodes"][from_node, 2]
                     OPEN[j, 5] = spatial_data["nodes"][from_node, 3]
@@ -82,14 +86,9 @@ function optimize_route(spatial_data, spatial_data_matrices, cost_data, equipmen
         else
             NoPath = 0
         end
-        print(CLOSED_COUNT,"\n")
     end
-    print(start_position, "\n")
-    print(finish_position, "\n")
     i = size(CLOSED, 1)
-    print(CLOSED, "\n")
     nodeval = CLOSED[i]
-    print(nodeval, "\n")
     i = 1
     optimal_path = nodeval
     ac_dc = OPEN[OPEN[:, 2] .== nodeval, 12]
@@ -120,9 +119,9 @@ function determine_start_and_end_node(spatial_data_matrices, input_data)
         idx2 = findall(spatial_data_matrices["ohl"]["nodes"][:, 3] .== input_data["start_node"]["y"])
         start_position = intersect(idx1, idx2)
 
-        idx1 = findall(spatial_data_matrices["ohl"]["nodes"][:, 2] .== input_data["end_node"]["x"])
-        idx2 = findall(spatial_data_matrices["ohl"]["nodes"][:, 3] .== input_data["end_node"]["y"])
-        finish_position = intersect(idx1, idx2)
+        idx3 = findall(spatial_data_matrices["ohl"]["nodes"][:, 2] .== input_data["end_node"]["x"])
+        idx4 = findall(spatial_data_matrices["ohl"]["nodes"][:, 3] .== input_data["end_node"]["y"])
+        finish_position = intersect(idx3, idx4)
 
         sp = start_position[1]
         fp = finish_position[1]
@@ -131,7 +130,7 @@ function determine_start_and_end_node(spatial_data_matrices, input_data)
 end
 
 function estimate_initial_distance(start_position, finish_position, spatial_data, average_weight)
-    distance = sqrt.((spatial_data["nodes"][start_position, 2] - spatial_data["nodes"][finish_position, 2]).^2 + spatial_data["nodes"][start_position, 3] - spatial_data["nodes"][finish_position, 3]).^2 * average_weight
+    distance = sqrt.((spatial_data["nodes"][start_position, 2] - spatial_data["nodes"][finish_position, 2]).^2 + (spatial_data["nodes"][start_position, 3] - spatial_data["nodes"][finish_position, 3]).^2) * average_weight
 
     d = distance[1]
     return d
@@ -254,7 +253,7 @@ function my_min_fn(OPEN, OPEN_COUNT, finish_node)
 
     index = (1:OPEN_COUNT)'
     
-    temp_array = [OPEN[OPEN[1:OPEN_COUNT, 1] .== 1, :] index[OPEN[1:OPEN_COUNT, 1] .==1]]
+    temp_array = [OPEN[OPEN[1:OPEN_COUNT, 1] .== 1, :] index[OPEN[1:OPEN_COUNT, 1] .== 1]]
     goal_index = findall(OPEN[:, 1] .== finish_node)
     
     if !isempty(goal_index)

@@ -38,8 +38,35 @@ function build_spatial_matrices_and_cost_data(input_data; equipment = "ohl")
     delta_y = Int(max(input_data["resolution_factor"],(y_node_max-y_node_min)/ymax))
 
     # make grid
-    x = x_border_min : delta_x : x_border_max
-    y = y_border_min : delta_y : y_border_max  
+
+    x = collect(x_node_min : delta_x : x_node_max)
+    y = collect(y_node_min : delta_y : y_node_max)
+
+    if x[end] != x_node_max
+        x = [x; x_node_max]
+    end
+    if y[end] != y_node_max
+        y = [y; y_node_max]
+    end
+
+
+    x_beg = collect(x_border_min : delta_x : x[1])
+    if x_beg[end] != x[1]
+        x_beg = [x; x[1]]
+    end
+    if length(x) == 1
+        x_beg[end] = []
+    end
+    y_beg = collect(y_border_min : delta_y : y[1])
+    if y_beg[end] != y[1]
+        y_beg = [y; y[1]]
+    end
+    if length(y) == 1
+        y_beg[end]= []
+    end
+    
+    x = [x_beg; x[2:end-1]; collect(x[end] : delta_x : x_border_max)]
+    y = [y_beg; y[2:end-1]; collect(y[end] : delta_y : y_border_max)]
 
     X = x' .* ones(size(y, 1))
     Y = (ones(size(x, 1)))' .*  y
@@ -80,7 +107,7 @@ function assign_rgb_values(X, Y, x, y, input_data, area)
         nodes_w[((idx-1) * size(X,1)+1) : idx * size(X,1) ,1] = ((idx-1) * size(X,1)+1) :idx * size(X,1)
         nodes_w[((idx-1) * size(X,1)+1) : idx * size(X,1), 2] = X[:, idx]
         nodes_w[((idx-1) * size(X,1)+1) : idx * size(X,1), 3] = Y[:, idx]
-        nodes_w[((idx-1) * size(X,1)+1) : idx * size(X,1), 4] = input_data["rgb_values"][area][x[idx], y]
+        nodes_w[((idx-1) * size(X,1)+1) : idx * size(X,1), 4] = input_data["rgb_values"][area][y, Int.(x[idx])]
     end
     return nodes_w
 end
@@ -108,7 +135,6 @@ function assign_node_weights(node_weights, input_data, equipment)
         end
         node_weights_[idx, 4] = max(1, node_weights_[idx, 4])
     end
-
     return node_weights_
 end
 
@@ -205,7 +231,6 @@ function create_segments_and_segment_weights(nodes, node_weights, onshore_nodes,
     else
         print("Overlapping area weight must be average or minimum")
     end
-
     onshore_flag[end-size(X,1)+2:end] = onshore_nodes[Int.(segments[end-size(X,1)+2:end,2] .+ 1)] .* onshore_nodes[end - size(X,1) + 1 : end-1]
     segment_km[end - size(X,1) + 2 : end] .= delta_y * input_data["resolution_factor"]
 
@@ -215,7 +240,7 @@ end
 function merge_maps(spatial_data_ohl, costs_ohl, spatial_data_ugc, costs_ugc, input_data)
     costs_ohl["ohl_km"] = spatial_data_ohl["segment_km"] .* (spatial_data_ohl["segment_weights"] .* costs_ohl["installation"] .+ costs_ohl["investment"]) ./ input_data["resolution_factor"]
     costs_ugc["ugc_km"] = spatial_data_ugc["segment_km"] .* ((spatial_data_ugc["segment_weights"] .* ((costs_ugc["onshore"]["installation"] .* spatial_data_ugc["onshore_flag"]) .+ (costs_ugc["offshore"]["installation"] .* (1 .- spatial_data_ugc["onshore_flag"])))) .+ ((costs_ugc["onshore"]["investment"] .* spatial_data_ugc["onshore_flag"]) .+ (costs_ugc["offshore"]["investment"] .* (1 .- spatial_data_ugc["onshore_flag"])))) ./ input_data["resolution_factor"]
-
+    
     # Update segment weights based on costs
     spatial_data_ohl["segment_weights"] = (spatial_data_ohl["segment_weights"] .* costs_ohl["installation"] .+ costs_ohl["investment"]) .* input_data["resolution_factor"]
     spatial_data_ugc["segment_weights"] = ((spatial_data_ugc["segment_weights"] .* ((costs_ugc["onshore"]["installation"] .* spatial_data_ugc["onshore_flag"]) .+ (costs_ugc["offshore"]["installation"] .* (1 .- spatial_data_ugc["onshore_flag"])))) .+ ((costs_ugc["onshore"]["investment"] .* spatial_data_ugc["onshore_flag"]) .+ (costs_ugc["offshore"]["investment"] .* (1 .- spatial_data_ugc["onshore_flag"])))) .* input_data["resolution_factor"]
