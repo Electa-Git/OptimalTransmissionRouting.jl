@@ -12,7 +12,9 @@ bus2 = Dict{String, Any}()
 bus2["longitude"] = 14.1482998
 bus2["latitude"] = 37.5900782
 
-strategy = "all_permitted" #"all_permitted" # or "OHL_on_existing_corridors" or "cables_only"
+# strategy = "all_permitted"
+# strategy = "OHL_on_existing_corridors"
+strategy = "cables_only"
 
 spatial_weights, voltages, resolution = OTR.define_weights_voltages(strategy)
 
@@ -21,7 +23,7 @@ rgb_values, nodes_lp, boundaries, plot_dictionary = OTR.convert_image_files_to_w
 #define inputs
 input_data = Dict{String, Any}()
 
-input_data["resolution_factor"] = 1 # resolution_factor 1,2,3, ... to speed up algorithm
+input_data["resolution_factor"] = 2 # resolution_factor 1,2,3, ... to speed up algorithm
 input_data["algorithm_factor"] = 1 # algorithm_factor 1.....1.3 to speed up Astar algorithm, goes at expense of accuracy
 input_data["distance"] = 2.5  # do not change: this is the standard resolution of the environmental data
 input_data["algorithm"] = "Astar"  # "Astar" or "Dijkstra"
@@ -44,20 +46,4 @@ input_data["end_node"]["x"] = nodes_lp["x2"]
 input_data["end_node"]["y"] = nodes_lp["y2"] 
 
 @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab  = OTR.do_optimal_routing(input_data)
-# OTR.plot_optimal_path(plot_dictionary, spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab)
 OTR.plot_result(plot_dictionary, input_data, spatial_data, spatial_data_matrices, optimal_path)
-
-
-
-# # plot!(plot_dictionary["x_position"], plot_dictionary["y_position"], seriestype = :scatter)
-# for idx = 1 : size(optimal_path, 1) - 1
-#     x1 = spatial_data["nodes"][optimal_path[idx], 2]
-#     y1 = spatial_data["nodes"][optimal_path[idx], 3]
-#     x2 = spatial_data["nodes"][optimal_path[idx + 1], 2]
-#     y2 = spatial_data["nodes"][optimal_path[idx + 1], 3]
-#     plot!(p, [x1, x2], [y1, y2], label = "")
-# end
-# p
-
-# marker =:circle,
-# plot!(nodes_lp["x2"], nodes_lp["y2"], seriestype = :scatter)

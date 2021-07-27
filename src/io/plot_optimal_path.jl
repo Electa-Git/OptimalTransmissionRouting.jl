@@ -7,11 +7,6 @@ function plot_result(plot_dictionary, input_data, spatial_data, spatial_data_mat
             A[:, i, j] = look_up_table[Int.(plot_dictionary["overlay_image"][i, j]), :]'
         end
     end
-    # xdim = size(input_data["rgb_values"]["grid"], 2)
-    # ydim = size(input_data["rgb_values"]["grid"], 1)
-    # scale_x = abs(input_data["boundaries"]["xmin"] - input_data["boundaries"]["xmax"]) / xdim
-    # scale_y = abs(input_data["boundaries"]["ymin"] - input_data["boundaries"]["ymax"]) / ydim
-    # B = A[:, Int.(input_data["boundaries"]["ymin"]) : Int.(input_data["boundaries"]["ymax"]), Int.(input_data["boundaries"]["xmin"]) : Int.(input_data["boundaries"]["xmax"])]
     p = Images.colorview(ColorTypes.RGB, A)
     Plots.plot(p)
     for idx = 1 : size(optimal_path, 1) - 1
@@ -27,15 +22,15 @@ function plot_result(plot_dictionary, input_data, spatial_data, spatial_data_mat
                 p = Plots.plot!([x1, x2], [y1, y2], color = :brown, linestyle = :dot, linewidth = 2, label = "")
             end
         else
-            # if ohl_cable == "ugc"
-            #     p = Plots.plot!([x1, x2], [y1, y2], color = :black, label = "")
-            # else
-            #     p = Plots.plot!([x1, x2], [y1, y2], color = :black, marker = :x, label = "")
-            # end
+            if ohl_cable == "ugc"
+                p = Plots.plot!([x1, x2], [y1, y2], color = :black, linewidth = 2, label = "")
+            else
+                p = Plots.plot!([x1, x2], [y1, y2], color = :black, linestyle = :dot, linewidth = 2, label = "")
+            end
         end
     end
     Plots.plot!(xlims=(input_data["boundaries"]["xmin"],input_data["boundaries"]["xmax"]), ylims = (input_data["boundaries"]["ymin"], input_data["boundaries"]["ymax"]))
-    plot_file = "plot_test.pdf"
+    plot_file = join(["plot_test_",input_data["strategy"],"_",input_data["technology"],".pdf"])
     Plots.savefig(p, plot_file)
  end
 
