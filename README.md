@@ -15,11 +15,11 @@ The latest stable release of OptimalTransmissionRouting.jl can be installed usin
 ```julia
 Pkg.add("OptimalTransmissionRouting")
 ```
-The current version of PowerModelsACDC is 0.1.0.
+The current version of OptimalTransmissionRouting.jl is 0.1.0.
 
 ## Citing OptimalTransmissionRouting.jl
 
-If you find PowerModelsACDC useful in your work, we kindly request that you cite the following publications:
+If you find OptimalTransmissionRouting.jl useful in your work, we kindly request that you cite the following publications:
 [Detailed description of the mathametical model](https://ieeexplore.ieee.org/abstract/document/6746189):
 ```
 @ARTICLE{6746189,
