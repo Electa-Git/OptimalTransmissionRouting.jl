@@ -1,8 +1,3 @@
-import OptimalTransmissionRouting; const OTR = OptimalTransmissionRouting
-import Images
-using ColorTypes
-using Plots
-
 # Some branch in Italy
 
 bus1 = Dict{String, Any}()
@@ -45,5 +40,88 @@ input_data["end_node"] = Dict{String, Any}()
 input_data["end_node"]["x"] = nodes_lp["x2"]
 input_data["end_node"]["y"] = nodes_lp["y2"] 
 
-@time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab  = OTR.do_optimal_routing(input_data)
-OTR.plot_result(plot_dictionary, input_data, spatial_data, spatial_data_matrices, optimal_path)
+
+@testset "DC cables only" begin
+    strategy = "cables_only"
+    input_data["technology"] = "dc" # or "dc"
+    input_data["strategy"] = strategy 
+    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab  = OTR.do_optimal_routing(input_data)
+
+    @testset "cost data" begin
+        @test isapprox(cost_data["ohl"]["ohl_km"][1], 1.24362898072976e7; atol = 1e0)
+        @test isapprox(cost_data["ohl"]["ohl_km"][17], 1.5231374779172337e7; atol = 1e0)
+        @test isapprox(cost_data["ohl"]["ohl_km"][9639], 2.1540416786293026e7; atol = 1e0)
+    end
+    @testset "total cost" begin
+        @test isapprox(c_tot, 9.807293638249868e8; atol = 1e0)
+    end
+    @testset "optimal path" begin
+        @test isapprox(optimal_path[52], 13019)
+        @test isapprox(optimal_path[15], 10790)
+    end
+end
+@testset "DC all permitted" begin
+    strategy = "all_permitted"
+    input_data["technology"] = "dc" # or "dc"
+    input_data["strategy"] = strategy 
+    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab  = OTR.do_optimal_routing(input_data)
+
+
+    @testset "cost data" begin
+        @test isapprox(cost_data["ohl"]["ohl_km"][1], 1.24362898072976e7; atol = 1e0)
+        @test isapprox(cost_data["ohl"]["ohl_km"][17], 1.5231374779172337e7; atol = 1e0)
+        @test isapprox(cost_data["ohl"]["ohl_km"][9639], 2.1540416786293026e7; atol = 1e0)
+    end
+    @testset "total cost" begin
+        @test isapprox(c_tot, 9.807293638249868e8; atol = 1e0)
+    end
+    @testset "optimal path" begin
+        @test isapprox(optimal_path[52], 13019)
+        @test isapprox(optimal_path[15], 10790)
+    end
+end
+
+@testset "AC cables only" begin
+    strategy = "cables_only"
+    input_data["technology"] = "ac" # or "dc"
+    input_data["strategy"] = strategy 
+    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab  = OTR.do_optimal_routing(input_data)
+    OTR.plot_result(plot_dictionary, input_data, spatial_data, spatial_data_matrices, optimal_path)
+
+    @testset "cost data" begin
+        @test isapprox(cost_data["ohl"]["ohl_km"][1], 4.072540970760065e7; atol = 1e0)
+        @test isapprox(cost_data["ohl"]["ohl_km"][17], 4.072540970760065e7; atol = 1e0)
+        @test isapprox(cost_data["ohl"]["ohl_km"][9639], 5.759442674168975e7; atol = 1e0)
+    end
+    @testset "total cost" begin
+        @test isapprox(c_tot, 2.0405224791992671e9; atol = 1e0)
+    end
+    @testset "optimal path" begin
+        @test isapprox(optimal_path[52], 13027)
+        @test isapprox(optimal_path[15], 10790)
+    end
+end
+
+@testset "AC all permitted" begin
+    strategy = "all_permitted"
+    input_data["technology"] = "ac" # or "dc"
+    input_data["strategy"] = strategy 
+    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab  = OTR.do_optimal_routing(input_data)
+    OTR.plot_result(plot_dictionary, input_data, spatial_data, spatial_data_matrices, optimal_path)
+
+    @testset "cost data" begin
+        @test isapprox(cost_data["ohl"]["ohl_km"][1], 4.072540970760065e7; atol = 1e0)
+        @test isapprox(cost_data["ohl"]["ohl_km"][17], 4.072540970760065e7; atol = 1e0)
+        @test isapprox(cost_data["ohl"]["ohl_km"][9639], 5.759442674168975e7; atol = 1e0)
+    end
+    @testset "total cost" begin
+        @test isapprox(c_tot, 2.0405224791992671e9; atol = 1e0)
+    end
+    @testset "optimal path" begin
+        @test isapprox(optimal_path[52], 13027)
+        @test isapprox(optimal_path[15], 10790)
+    end
+end
+
+# For plotting the pdf of the result
+# OTR.plot_result(plot_dictionary, input_data, spatial_data, spatial_data_matrices, optimal_path)
