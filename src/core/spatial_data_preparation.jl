@@ -87,7 +87,7 @@ function build_spatial_matrices_and_cost_data(input_data; equipment = "ohl")
 
     segments, segment_weights, segment_km, onshore_flag = create_segments_and_segment_weights(nodes, node_weights, onshore_nodes, input_data, X, Y, x, y, delta_x, delta_y)
 
-    costs, equipment_details = calculate_costs_and_losses(input_data; equipment)
+    costs, equipment_details = calculate_costs_and_losses(input_data; equipment = equipment)
 
     spatial_data = Dict{String, Any}()
     spatial_data["nodes"] = nodes
