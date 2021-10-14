@@ -14,11 +14,12 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 
 
 [compat]
+ColorTypes = "~0.9.1"
 JuMP = "~0.19.1, ~0.21.0"
 Memento = "~0.10.0, ~0.12.0, ~1.0.0"
 julia = "^1.1.0"
 FileIO = "~1.10.1"
-Images = ">=0.9.1"
+Images = "~0.24.1"
 Plots = "~0.28.4"
 
 
