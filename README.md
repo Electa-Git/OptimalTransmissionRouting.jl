@@ -3,7 +3,7 @@
 Status:
 [![CI](https://github.com/Electa-Git/OptimalTransmissionRouting.jl/workflows/CI/badge.svg)](https://github.com/Electa-Git/OptimalTransmissionRouting.jl/actions?query=workflow%3ACI)
 [![codecov](https://codecov.io/gh/Electa-Git/OptimalTransmissionRouting.jl/branch/master/graph/badge.svg)](https://app.codecov.io/gh/Electa-Git/OptimalTransmissionRouting.jl)
-[![Documentation](https://github.com/Electa-Git/OptimalTransmissionRouting.jl/actions/workflows/documentation.yml/badge.svg)](https://electa-git.github.io/OptimalTransmissionRouting.jl)
+[![Documentation](https://github.com/Electa-Git/OptimalTransmissionRouting.jl/actions/workflows/documentation.yml/badge.svg)](https://electa-git.github.io/OptimalTransmissionRouting.jl/stable)
 </p>
 
 
