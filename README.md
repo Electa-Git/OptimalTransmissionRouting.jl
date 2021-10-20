@@ -20,7 +20,7 @@ The current version of OptimalTransmissionRouting.jl is 0.1.0.
 ## Citing OptimalTransmissionRouting.jl
 
 If you find OptimalTransmissionRouting.jl useful in your work, we kindly request that you cite the following publications:
-[Detailed description of the mathametical model](https://ieeexplore.ieee.org/abstract/document/6746189):
+[Detailed description of the mathematical model](https://ieeexplore.ieee.org/abstract/document/6746189):
 ```
 @ARTICLE{6746189,
   author={Ergun, Hakan and Rawn, Barry and Belmans, Ronnie and Van Hertem, Dirk},
