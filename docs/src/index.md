@@ -6,7 +6,7 @@ CurrentModule = OptimalTransmissionRouting
 
 ## Overview
 
-OptimalTransmissionRouting.jl is a Julia/JuMP package to determine the optimal transmission system route considering spatial information. The underlying priciple is that spatial information coming from an image file is convertered to an array of installation cost weights (see io/spatial_image_files). To that end spatial infromation from http://www.eea.europa.eu/data-and-maps/data/corine-land-cover-2006-raster-2 is used. The created array represents a weighted graph connecting a number of nodes horizontally, vertiacally and diagonally with graph weights reflecting the installation costs for each region of the map. Using the A-star algorithm, the shortest path in this weighted graph is found, which provides the least cost transmission path.
+OptimalTransmissionRouting.jl is a Julia/JuMP package to determine the optimal transmission system route considering spatial information. The underlying priciple is that spatial information coming from an image file is convertered to an array of installation cost weights (see io/spatial_image_files). To that end spatial infromation from http://www.eea.europa.eu/data-and-maps/data/corine-land-cover-2006-raster-2 is used. The created array represents a weighted graph connecting a number of nodes horizontally, vertiacally and diagonally with graph weights reflecting the installation costs for each region of the map. Using the A-star algorithm, the shortest path in this weighted graph is found, which provides the least cost transmission path. 
 
 Developed by:
 - Hakan Ergun KU Leuven / EnergyVille
