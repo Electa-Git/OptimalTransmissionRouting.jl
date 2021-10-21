@@ -14,7 +14,7 @@ The latest stable release of OptimalTransmissionRouting.jl can be installed usin
 ```julia
 Pkg.add("OptimalTransmissionRouting")
 ```
-The current version of OptimalTransmissionRouting.jl is 0.1.0.
+The current version of OptimalTransmissionRouting.jl is 0.1.1.
 
 ## Citing OptimalTransmissionRouting.jl
 
