@@ -11,5 +11,5 @@ Documenter.makedocs(
 )
 
 Documenter.deploydocs(
-    repo = "github.com/Electa-Git/OptimalTransmissionRouting.jl.git"
+    repo = "https://github.com/Electa-Git/OptimalTransmissionRouting.jl.git"
 )
