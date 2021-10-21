@@ -12,7 +12,7 @@ Documenter.makedocs(
 
 Documenter.deploydocs(
     target = "build",
-    repo = "https://github.com/Electa-Git/OptimalTransmissionRouting.jl.git",
+    repo = "github.com/Electa-Git/OptimalTransmissionRouting.jl.git",
     branch = "gh-pages",
     devbranch = "main",
     versions = ["stable" => "v^", "v#.#"],
