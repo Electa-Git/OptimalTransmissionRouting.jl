@@ -16,8 +16,7 @@ Documenter.deploydocs(
     repo = "https://github.com/Electa-Git/OptimalTransmissionRouting.jl.git",
     branch = "gh-pages",
     devbranch = "main",
-    devurl = "dev",
-    versions = ["stable" => "v^", "v#.#", devurl => devurl],
+    versions = ["stable" => "v^", "v#.#"],
     push_preview = false
 )
 
