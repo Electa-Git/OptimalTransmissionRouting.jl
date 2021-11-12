@@ -5,20 +5,35 @@ function determine_impedance_parameters(input_data, spatial_data, spatial_data_m
     r_pu = 0
     x_pu = 0
     bc_pu = 0
+    km = 0
+    km_ohl = 0
+    km_ugc = 0
     for idx = 1 : size(optimal_path, 1) - 1
         ohl_cable = ohl_or_cable(spatial_data, spatial_data_matrices, optimal_path[idx], optimal_path[idx + 1])
         r_, x_, bc_, r_pu_, x_pu_, bc_pu_ = get_impedance_data(equipment_data, ohl_cable, input_data)
-        km = get_segment_distance(spatial_data, spatial_data_matrices, optimal_path[idx], optimal_path[idx + 1])
-        r = r + (r_ * km)
-        r_pu = r_pu + (r_pu_ * km)
-        x = x + (x_ * km)
-        x_pu = x_pu +(x_pu_ * km)
+        km_ = get_segment_distance(spatial_data, spatial_data_matrices, optimal_path[idx], optimal_path[idx + 1])
+        
+        km = km + km_
+        if ohl_cable == "ohl"
+            km_ohl = km_ohl + km_
+        else
+            km_ugc = km_ugc + km_
+        end
+        r = r + (r_ * km_)
+        r_pu = r_pu + (r_pu_ * km_)
+        x = x + (x_ * km_)
+        x_pu = x_pu +(x_pu_ * km_)
 
-        bc = bc + (bc_ * km)
-        bc_pu = bc_pu + (bc_pu_ * km)
+        bc = bc + (bc_ * km_)
+        bc_pu = bc_pu + (bc_pu_ * km_)
     end
 
     route_impedance = Dict{String, Any}()
+    route_length = Dict{String, Any}()
+
+    route_length["total_length"] = km
+    route_length["ohl_length"] = km_ohl
+    route_length["ugc_length"] = km_ugc
 
     route_impedance["r"] = r
     route_impedance["x"] = x
@@ -28,7 +43,7 @@ function determine_impedance_parameters(input_data, spatial_data, spatial_data_m
     route_impedance["x_pu"] = x_pu
     route_impedance["bc_pu"] = bc_pu
 
-    return route_impedance
+    return route_impedance, route_length
  end
 
 

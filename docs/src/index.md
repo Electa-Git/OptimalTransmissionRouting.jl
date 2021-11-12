@@ -76,7 +76,7 @@ input_data["end_node"]["y"] = nodes_lp["y2"]
 Finally, the creation of the edges of the graph and the optimisation of the route is carried out using:
 
 ```julia
-spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab  = OTR.do_optimal_routing(input_data)
+spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab, route_impedance, route_legnth  = OTR.do_optimal_routing(input_data)
 ```
 During the route optimisation, following aspects are considered:
 - Maximum offshore length for AC cables
@@ -89,6 +89,13 @@ During the route optimisation, following aspects are considered:
 - If certain vertices belong to multiple spatial areas, which weight should be chosen:
 -- The average of both weights
 -- The minimum of both weights
+
+The tool delivers as output
+- ```julia c_tot ```, the total cost of the transmission link
+- ```julia cost_data ```, the per km cost of equipment
+- ```julia equipment_data ```, number of circuits, bundles and cross-sections
+- ```julia route_impedance ```, resistance, admittance and capaciatance in Ohm in pu (base power = 100 MVA)
+- ```julia route_legnth ```, the total length, as well as length of the OHL and UGC sections
 
 Also using the function:
 ```julia
