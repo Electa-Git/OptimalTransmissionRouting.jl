@@ -32,7 +32,7 @@ bus2["latitude"] = 37.5900782
 
 First using:
 ```julia
-spatial_weights, voltages, resolution = OTR.define_weights_voltages(strategy)
+spatial_weights, voltages, resolution, impedances = OTR.define_weights_voltages(strategy)
 ``` 
 the spatial weights can be defined, which uses the chosen strategy as input as a string. The possible options are:
 
@@ -72,6 +72,7 @@ input_data["start_node"]["y"] = nodes_lp["y1"]
 input_data["end_node"] = Dict{String, Any}()
 input_data["end_node"]["x"] = nodes_lp["x2"]
 input_data["end_node"]["y"] = nodes_lp["y2"] 
+input_data["impedances"] = impedances # Provide look-up table for OHL & OGC impedances
 ```
 Finally, the creation of the edges of the graph and the optimisation of the route is carried out using:
 
