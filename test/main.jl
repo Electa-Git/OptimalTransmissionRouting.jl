@@ -45,7 +45,7 @@ input_data["impedances"] = impedances # Provide look-up table for OHL & OGC impe
     strategy = "cables_only"
     input_data["technology"] = "dc" # or "dc"
     input_data["strategy"] = strategy 
-    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab, route_impedance  = OTR.do_optimal_routing(input_data)
+    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab, route_impedance, route_length  = OTR.do_optimal_routing(input_data)
 
     @testset "cost data" begin
         @test isapprox(cost_data["ohl"]["ohl_km"][1], 1.24362898072976e7; atol = 1e0)
@@ -64,12 +64,18 @@ input_data["impedances"] = impedances # Provide look-up table for OHL & OGC impe
         @test isapprox(route_impedance["x_pu"], 0.0, atol = 1e-3)
         @test isapprox(route_impedance["bc_pu"], 0.0, atol = 1e-3)
     end
+
+    @testset "route_length" begin
+        @test isapprox(route_length["total_length"], 174.544725, atol = 1e-1)
+        @test isapprox(route_length["ohl_length"], 0.0, atol = 1e-3)
+        @test isapprox(route_length["ugc_length"], 174.54472, atol = 1e-3)
+    end
 end
 @testset "DC all permitted" begin
     strategy = "all_permitted"
     input_data["technology"] = "dc" # or "dc"
     input_data["strategy"] = strategy 
-    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab, route_impedance  = OTR.do_optimal_routing(input_data)
+    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab, route_impedance, route_length  = OTR.do_optimal_routing(input_data)
 
     @testset "cost data" begin
         @test isapprox(cost_data["ohl"]["ohl_km"][1], 1.24362898072976e7; atol = 1e0)
@@ -89,14 +95,19 @@ end
         @test isapprox(route_impedance["x_pu"], 0.0, atol = 1e-3)
         @test isapprox(route_impedance["bc_pu"], 0.0, atol = 1e-3)
     end
+
+    @testset "route_length" begin
+        @test isapprox(route_length["total_length"], 174.544725, atol = 1e-1)
+        @test isapprox(route_length["ohl_length"], 0.0, atol = 1e-3)
+        @test isapprox(route_length["ugc_length"], 174.54472, atol = 1e-3)
+    end
 end
 
 @testset "AC cables only" begin
     strategy = "cables_only"
     input_data["technology"] = "ac" # or "dc"
     input_data["strategy"] = strategy 
-    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab, route_impedance  = OTR.do_optimal_routing(input_data)
-    OTR.plot_result(plot_dictionary, input_data, spatial_data, spatial_data_matrices, optimal_path)
+    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab, route_impedance, route_length  = OTR.do_optimal_routing(input_data)
 
     @testset "cost data" begin
         @test isapprox(cost_data["ohl"]["ohl_km"][1], 4.072540970760065e7; atol = 1e0)
@@ -115,6 +126,12 @@ end
         @test isapprox(route_impedance["r_pu"], 0.0005509232966856801, atol = 1e-6)
         @test isapprox(route_impedance["x"], 9.09313399161207, atol = 1e-3)
         @test isapprox(route_impedance["bc_pu"], 485.0546916571823, atol = 1e-3)
+    end
+
+    @testset "route_length" begin
+        @test isapprox(route_length["total_length"], 185.57416, atol = 1e-1)
+        @test isapprox(route_length["ohl_length"], 0.0, atol = 1e-3)
+        @test isapprox(route_length["ugc_length"], 185.57416, atol = 1e-3)
     end
 end
 
@@ -122,8 +139,7 @@ end
     strategy = "all_permitted"
     input_data["technology"] = "ac" # or "dc"
     input_data["strategy"] = strategy 
-    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab, route_impedance  = OTR.do_optimal_routing(input_data)
-    OTR.plot_result(plot_dictionary, input_data, spatial_data, spatial_data_matrices, optimal_path)
+    @time spatial_data, spatial_data_matrices, cost_data, equipment_data, c_tot, optimal_path, ac_dc, ac_cab, dc_cab, route_impedance, route_length  = OTR.do_optimal_routing(input_data)
 
     @testset "cost data" begin
         @test isapprox(cost_data["ohl"]["ohl_km"][1], 4.072540970760065e7; atol = 1e0)
@@ -142,6 +158,12 @@ end
         @test isapprox(route_impedance["r_pu"], 0.0005509232966856801, atol = 1e-6)
         @test isapprox(route_impedance["x"], 9.09313399161207, atol = 1e-3)
         @test isapprox(route_impedance["bc_pu"], 485.0546916571823, atol = 1e-3)
+    end
+
+    @testset "route_length" begin
+        @test isapprox(route_length["total_length"], 185.57416, atol = 1e-1)
+        @test isapprox(route_length["ohl_length"], 0.0, atol = 1e-3)
+        @test isapprox(route_length["ugc_length"], 185.57416, atol = 1e-3)
     end
 end
 
