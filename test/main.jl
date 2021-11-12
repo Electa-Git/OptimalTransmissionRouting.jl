@@ -39,7 +39,7 @@ input_data["start_node"]["y"] = nodes_lp["y1"]
 input_data["end_node"] = Dict{String, Any}()
 input_data["end_node"]["x"] = nodes_lp["x2"]
 input_data["end_node"]["y"] = nodes_lp["y2"]
-input_data["impedances"] = impedances # Provide look-up table for OHL & OGC impedancesß
+input_data["impedances"] = impedances # Provide look-up table for OHL & OGC impedances
 
 @testset "DC cables only" begin
     strategy = "cables_only"
